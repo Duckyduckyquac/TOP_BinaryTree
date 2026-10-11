@@ -1,4 +1,4 @@
-class Node {
+class TreeNode {
     constructor (data=null,left=null,right=null){
         this.data = data;
         this.left = left;
@@ -6,3 +6,5 @@ class Node {
     }
 
 }
+
+module.exports = {TreeNode};

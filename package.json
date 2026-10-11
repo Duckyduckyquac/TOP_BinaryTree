@@ -1,0 +1,23 @@
+{
+  "name": "project_12-binarysearchtree",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Duckyduckyquac/TOP_BinaryTree#readme",
+  "bugs": {
+    "url": "https://github.com/Duckyduckyquac/TOP_BinaryTree/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Duckyduckyquac/TOP_BinaryTree.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "Helper.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2"
+  }
+}
