@@ -1,7 +1,7 @@
 const { Tree } = require('./Tree.js');
 
 describe('Tree Data Structure', () => {
-    
+
     describe('Constructor and buildTree', () => {
         test('sorts, removes duplicates, and builds a balanced BST', () => {
             let tree = new Tree([5, 4, 3, 2, 1, 3, 4]);
@@ -47,7 +47,7 @@ describe('Tree Data Structure', () => {
             // Try inserting a duplicate value
             tree.insert(10); // Already exists as root
             expect(tree.root.data).toBe(10);
-            
+
             // Check using includes to verify insertion success
             expect(tree.includes(3)).toBe(true);
             expect(tree.includes(20)).toBe(true);
@@ -57,13 +57,13 @@ describe('Tree Data Structure', () => {
         test('handles building a tree from an empty state', () => {
             let tree = new Tree([]);
             tree.insert(50);
-            
+
             expect(tree.root).not.toBeNull();
             expect(tree.root.data).toBe(50);
-            
+
             tree.insert(30);
             tree.insert(70);
-            
+
             expect(tree.root.left.data).toBe(30);
             expect(tree.root.right.data).toBe(70);
         });
@@ -107,6 +107,98 @@ describe('Tree Data Structure', () => {
             expect(tree.includes(1)).toBe(true);
             expect(tree.includes(2)).toBe(true);
             expect(tree.includes(3)).toBe(true);
+        });
+    });
+
+    describe('Traversals (levelOrderForEach, inOrderForEach, preOrderForEach, postOrderForEach)', () => {
+        // Tree structure for [1, 2, 3, 4, 5, 6, 7]:
+        //        4
+        //      /   \
+        //     2     6
+        //    / \   / \
+        //   1   3 5   7
+        let tree;
+
+        beforeEach(() => {
+            tree = new Tree([1, 2, 3, 4, 5, 6, 7]);
+        });
+
+        test('levelOrderForEach visits nodes in breadth-first order', () => {
+            let result = [];
+            tree.levelOrderForEach(val => result.push(val));
+            expect(result).toEqual([4, 2, 6, 1, 3, 5, 7]);
+        });
+
+        test('inOrderForEach visits nodes in ascending order', () => {
+            let result = [];
+            tree.inOrderForEach(val => result.push(val));
+            expect(result).toEqual([1, 2, 3, 4, 5, 6, 7]);
+        });
+
+        test('preOrderForEach visits root before subtrees', () => {
+            let result = [];
+            tree.preOrderForEach(val => result.push(val));
+            expect(result).toEqual([4, 2, 1, 3, 6, 5, 7]);
+        });
+
+        test('postOrderForEach visits subtrees before root', () => {
+            let result = [];
+            tree.postOrderForEach(val => result.push(val));
+            expect(result).toEqual([1, 3, 2, 5, 7, 6, 4]);
+        });
+
+        test('throws an error if callback is missing in traversals', () => {
+            expect(() => tree.levelOrderForEach()).toThrow('Callback is required');
+            expect(() => tree.inOrderForEach()).toThrow('Callback is required');
+        });
+    });
+
+    describe('height(value) and depth(value)', () => {
+        let tree;
+
+        beforeEach(() => {
+            tree = new Tree([1, 2, 3, 4, 5, 6, 7]); // Root is 4 (depth 0, height 2)
+        });
+
+        test('calculates correct height for nodes', () => {
+            expect(tree.height(4)).toBe(2); // Root to deepest leaf
+            expect(tree.height(2)).toBe(1); // Node 2 has children 1 and 3
+            expect(tree.height(1)).toBe(0); // Leaf node height is 0
+            expect(tree.height(99)).toBeUndefined(); // Non-existent value
+        });
+
+        test('calculates correct depth for nodes', () => {
+            expect(tree.depth(4)).toBe(0); // Root depth is 0
+            expect(tree.depth(2)).toBe(1); // Child of root
+            expect(tree.depth(1)).toBe(2); // Grandchild of root
+            expect(tree.depth(99)).toBeUndefined(); // Non-existent value
+        });
+    });
+
+    describe('isBalanced() and rebalance()', () => {
+        test('correctly identifies balanced and unbalanced trees', () => {
+            let tree = new Tree([1, 2, 3, 4, 5, 6, 7]);
+            expect(tree.isBalanced()).toBe(true);
+
+            // Unbalance the tree by inserting sequential elements
+            tree.insert(8);
+            tree.insert(9);
+            tree.insert(10);
+            expect(tree.isBalanced()).toBe(false);
+        });
+
+        test('rebalances an unbalanced tree', () => {
+            let tree = new Tree([1, 2, 3, 4]);
+            tree.insert(5);
+            tree.insert(6);
+            tree.insert(7);
+            
+            // Tree should be lopsided/unbalanced now
+            expect(tree.isBalanced()).toBe(false);
+
+            // Rebalance the tree
+            tree.rebalance();
+            expect(tree.isBalanced()).toBe(true);
         });
     });
 

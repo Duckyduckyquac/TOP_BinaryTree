@@ -129,7 +129,211 @@ class Tree{
         }
     }
     levelOrderForEach(callback){
-        
+        // Throw errors if there was no callback function
+        if(typeof callback !== 'function'){
+            throw new Error('Callback is required');
+        }
+        else if(this.root===null){
+            return;
+        }
+        else if(this.root!==null){
+            _levelOrderRecursively([this.root]);
+        }
+        function _levelOrderRecursively(queue){
+            // Base case: queue is empty (no more operations)
+            if(queue.length<1){
+                return null;
+            }
+            // If this is not true, call the callback on its data, 
+            // add its left and/or right children to the queue if they exist
+            // recursively call the function _levelOrderRecursively
+            else if(queue.length>=1){
+                let currentTarget = queue[0];
+                callback(currentTarget.data);
+                
+                if(currentTarget.left!==null){
+                    queue.push(currentTarget.left);
+                }
+                if(currentTarget.right!==null){
+                    queue.push(currentTarget.right);
+                }
+                _levelOrderRecursively(queue.slice(1));
+            }
+        }
+    }
+    inOrderForEach(callback){
+        // Throw errors if there was no callback function
+        if(typeof callback !== 'function'){
+            throw new Error('Callback is required');
+        }
+        else if(this.root===null){
+            return null;
+        }
+        else if(this.root!==null){
+            _traverseInOrder(this.root);
+        }
+        function _traverseInOrder(node){
+            if (node === null){
+                return null;
+            }
+            else if (node!==null){
+                _traverseInOrder(node.left);
+                callback(node.data);
+                _traverseInOrder(node.right);
+            }
+        }
+    }
+    preOrderForEach(callback){
+        // Throw errors if there was no callback function
+        if(typeof callback !== 'function'){
+            throw new Error('Callback is required');
+        }
+        else if(this.root===null){
+            return null;
+        }
+        else if(this.root!==null){
+            _traversePreOrder(this.root);
+        }
+        function _traversePreOrder(node){
+            if (node === null){
+                return null;
+            }
+            else if (node!==null){
+                callback(node.data);
+                _traversePreOrder(node.left);
+                _traversePreOrder(node.right);
+            }
+        }
+    }
+    postOrderForEach(callback){
+        // Throw errors if there was no callback function
+        if(typeof callback !== 'function'){
+            throw new Error('Callback is required');
+        }
+        else if(this.root===null){
+            return null;
+        }
+        else if(this.root!==null){
+            _traversePostOrder(this.root);
+        }
+        function _traversePostOrder(node){
+            if (node === null){
+                return null;
+            }
+            else if (node!==null){
+                _traversePostOrder(node.left);
+                _traversePostOrder(node.right);
+                callback(node.data);
+            }
+        }
+    }
+    height(value){
+        // Base Case: The value is found
+        let targetNode = _findItem(value, this.root);
+
+        if(targetNode===null){
+            return undefined;
+        }
+        else if(targetNode!==null){
+            return _recursiveHeight(targetNode);
+        }
+
+        function _findItem(value, node){
+            // if the node is null
+            if(node === null){
+                return null;
+            }
+            // if the item is found
+            if(node.data === value){
+                return node;
+            }
+            else if(value<node.data){
+                return _findItem(value, node.left);
+            }
+            else if(value>=node.data){
+                return _findItem(value,node.right);
+            }
+        }
+
+        function _recursiveHeight(node){
+            if(node===null){
+                return -1;
+            }
+            
+            
+            let leftHeight = _recursiveHeight(node.left);
+            let rightHeight =  _recursiveHeight(node.right);
+
+            let chosenHeight = Math.max(leftHeight, rightHeight)+1;
+            return chosenHeight;
+        }
+    }
+    depth(value){
+        if(this.root===null){
+            return undefined;
+        }
+        else{
+            let step = 0;
+            let nodeDepth = _findDepth(step, value, this.root);
+            if(nodeDepth===null){
+                return undefined;
+            }
+            return nodeDepth;
+        }
+
+        function _findDepth(step, value, node){
+            // if the node is null
+            if(node === null){
+                return null;
+            }
+            // if the item is found
+            if(node.data === value){
+                return (step);
+            }
+            else if(value<node.data){
+                return _findDepth(step+1, value, node.left);
+            }
+            else if(value>=node.data){
+                return _findDepth(step+1, value,node.right);
+            }
+        }  
+    }
+
+    isBalanced(){
+        let result = _recursiveHeight(this.root);
+        if(result!==false){
+            return true;
+        }
+        else{
+            return false;
+        }
+        function _recursiveHeight(node){
+            if(node===null){
+                return -1;
+            }
+            else{
+                let leftHeight = _recursiveHeight(node.left);
+                let rightHeight = _recursiveHeight(node.right);
+
+                if((leftHeight===false)||
+                    (rightHeight===false)){
+                        return false;
+                    }
+
+                let absoluteHeightDiff = Math.abs(leftHeight-rightHeight);
+                if(absoluteHeightDiff>1){
+                    return false;
+                }
+                return Math.max(leftHeight, rightHeight)+1;
+            }
+        }
+    }
+    rebalance(){
+        let newArray = [];
+        this.inOrderForEach(function(num){
+            newArray.push(num);
+        });
+        this.root = this.buildTree(newArray, 0, newArray.length-1);
     }
 }
 module.exports = {Tree};
